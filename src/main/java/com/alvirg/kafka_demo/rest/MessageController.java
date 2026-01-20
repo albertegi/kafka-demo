@@ -1,9 +1,10 @@
-package com.alvirg.kafka_demo;
+package com.alvirg.kafka_demo.rest;
 
+import com.alvirg.kafka_demo.payload.Student;
+import com.alvirg.kafka_demo.producer.KafkaJsonProducer;
 import com.alvirg.kafka_demo.producer.KafkaProducer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class MessageController {
 
     private final KafkaProducer kafkaProducer;
+    private final KafkaJsonProducer kafkaJsonProducer;
 
     @PostMapping
     public ResponseEntity<String> sendMessage(
@@ -24,6 +26,16 @@ public class MessageController {
     ){
         kafkaProducer.sendMessage(message);
         return ResponseEntity.status(HttpStatus.CREATED).body("Message queued successfully");
+
+    }
+
+    @PostMapping("/json")
+    public ResponseEntity<String> sendJsonMessage(
+            @RequestBody
+            Student studentMessage
+    ){
+        kafkaJsonProducer.sendMessage(studentMessage);
+        return ResponseEntity.status(HttpStatus.CREATED).body("Message queued successfully as JSON");
 
     }
 }
